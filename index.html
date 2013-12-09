@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    /* .RdYlGn {fill:rgb(0,104,55)}*/
+    .q0-11{fill:rgb(165,0,38)}
+    .q1-11{fill:rgb(215,48,39)}
+    .q2-11{fill:rgb(244,109,67)}
+    .q3-11{fill:rgb(253,174,97)}
+    .q4-11{fill:rgb(254,224,139)}
+    .q5-11{fill:rgb(255,255,191)}
+    .q6-11{fill:rgb(217,239,139)}
+    .q7-11{fill:rgb(166,217,106)}
+    .q8-11{fill:rgb(102,189,99)}
+    .q9-11{fill:rgb(26,152,80)}
+    .q10-11{fill:rgb(0,104,55)}
+
+    .q0-6{fill:rgb(255,255,191)}
+    .q1-6{fill:rgb(217,239,139)}
+    .q2-6{fill:rgb(166,217,106)}
+    .q3-6{fill:rgb(102,189,99)}
+    .q4-6{fill:rgb(26,152,80)}
+    .q5-6{fill:rgb(0,104,55)}
+
+    .q0-9{fill:rgb(251,251,225)}
+    .q1-9{fill:rgb(247,252,185)}
+    .q2-9{fill:rgb(217,240,163)}
+    .q3-9{fill:rgb(173,221,142)}
+    .q4-9{fill:rgb(120,198,121)}
+    .q5-9{fill:rgb(65,171,93)}
+    .q6-9{fill:rgb(35,132,67)}
+    .q7-9{fill:rgb(0,104,55)}
+    .q8-9{fill:rgb(0,69,41)}
+  </style>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<!--<script src="http://d3js.org/topojson.v1.min.js"></script>-->
+<script>
+  var colorScale = d3.scale.quantize()
+//          .domain([0, d3.max(dataset.properties.pop_sqm)])
+      .domain([0, 500])
+      .range(d3.range(9).map(function(d) {
+        // console.log("q", d);
+        return "q" + d + "-9";
+      }));
+
+  var width = 1200;
+  var height = 700;
+
+  var svg = d3.select('body').append('svg')
+      .attr('width', width)
+      .attr('height', height);
+  var group = svg.append('g');
+
+  var projection = d3.geo.albersUsa();
+  group.attr('transform', 'scale(1.4, 1.4)');
+
+  d3.json('us_counties.geojson', function(counties) {
+    group.selectAll('path')
+        .data(counties.features)
+        .enter().append('path')
+        .attr('d', d3.geo.path().projection(projection))
+        .attr('id', function(d){return d.properties.name.replace(/\s+/g, '')})
+        .attr("class", function(d) {
+          // console.log(d.properties.pop_sqkm);
+          // console.log(colorScale(d.properties.pop_sqkm));
+          return "YlGn " + colorScale(d.properties.pop_sqkm);
+        })
+
+      //      .style('fill', 'gray')
+
+        .style('stroke', 'white')
+        .style('stroke-width',.8);
+  });
+
+</script>
+</body>
+</html>
